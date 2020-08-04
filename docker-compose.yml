@@ -1,0 +1,24 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - ./config/.env
+    volumes:
+    - local_postgres_data:/var/lib/postgresql/data
+  web:
+    container_name: fabrique-django
+    build:
+      context: .
+      dockerfile: compose/local/django/Dockerfile
+    command: /start_django.sh
+    volumes:
+      - .:/code
+    ports:
+      - "8010:8000"
+    depends_on:
+      - db
